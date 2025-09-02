@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>جرد العهدة</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'arabic': ['Cairo', 'Tahoma', 'Arial', 'sans-serif']
+                    },
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#F3F4F6'
+                    }
+                }
+            }
+        }
+
+        // Dark mode support
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+<style>
+        body {
+            font-family: 'Cairo', 'Tahoma', 'Arial', sans-serif;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .print-content {
+            background: white;
+            color: black;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .print-table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 600px;
+        }
+        
+        .print-table th,
+        .print-table td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .print-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        @media print {
+            .no-print { display: none !important; }
+        }
+        
+        .custom-input {
+            background: transparent;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-input:focus {
+            border-color: #5D5CDE;
+            box-shadow: 0 0 0 3px rgba(93, 92, 222, 0.1);
+            outline: none;
+        }
+        
+        .dark .custom-input {
+            border-color: #4b5563;
+            color: white;
+        }
+        
+        .dark .custom-input:focus {
+            border-color: #5D5CDE;
+        }
+    </style>
+<link href="manifest.webmanifest" rel="manifest"/><meta content="#5D5CDE" name="theme-color"/><link href="assets/icons/icon-192.png" rel="apple-touch-icon"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/></head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+<!-- Header -->
+<header class="bg-primary text-white p-4 shadow-lg">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<h1 class="text-xl font-bold">📋 جرد العهدة</h1>
+<div class="flex gap-2">
+<button class="tab-btn bg-white/20 px-3 py-1 rounded-lg text-sm transition-all duration-300 hover:bg-white/30" id="setup-tab" onclick="showSection('setup')">إعداد</button>
+<button class="tab-btn bg-white/20 px-3 py-1 rounded-lg text-sm transition-all duration-300 hover:bg-white/30" id="inventory-tab" onclick="showSection('inventory')">الجرد</button>
+<button class="tab-btn bg-white/20 px-3 py-1 rounded-lg text-sm transition-all duration-300 hover:bg-white/30" id="report-tab" onclick="showSection('report')">التقرير</button>
+</div>
+</div>
+</header>
+<main class="max-w-sm mx-auto min-h-screen pb-20">
+<!-- Setup Section -->
+<div class="p-4 space-y-6 fade-in" id="setup-section">
+<div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl">
+<h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    🏫 بيانات المدرسة
+                </h2>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium mb-2">اسم المدرسة</label>
+<input class="w-full custom-input text-base" id="schoolName" placeholder="أدخل اسم المدرسة" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2">شعار المدرسة</label>
+<div class="flex items-center gap-2">
+<input accept="image/*" class="hidden" id="logoInput" type="file"/>
+<button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors" onclick="document.getElementById('logoInput').click()">
+                                📷 اختر الشعار
+                            </button>
+<span class="text-sm text-gray-500" id="logoStatus"></span>
+</div>
+<div class="mt-2 hidden" id="logoPreview">
+<img class="w-16 h-16 object-contain border rounded-lg" id="logoImg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl">
+<h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    💾 إدارة البيانات
+                </h2>
+<div class="space-y-3">
+<button class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium" onclick="exportData()">
+                        📤 تصدير البيانات (JSON)
+                    </button>
+<button class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-medium" onclick="importData()">
+                        📥 استيراد البيانات
+                    </button>
+<!-- Hidden input for file import -->
+<input accept=".json,.csv" class="hidden" id="importFile" type="file"/>
+</div>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                    يدعم تصدير JSON واستيراد JSON و CSV
+                </p>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border-2 border-red-200 dark:border-red-800">
+<h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-600 dark:text-red-400">
+                    ⚠️ منطقة الخطر
+                </h2>
+<button class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-colors font-medium" onclick="clearAllData()">
+                    🗑️ مسح جميع البيانات
+                </button>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                    سيتم حذف جميع البيانات نهائياً ولا يمكن استرجاعها
+                </p>
+</div>
+</div>
+<!-- Inventory Section -->
+<div class="p-4 space-y-6 hidden" id="inventory-section">
+<div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl">
+<h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    📦 إضافة صنف جديد
+                </h2>
+<div class="space-y-3">
+<input class="w-full custom-input text-base" id="itemName" placeholder="اسم الصنف" type="text"/>
+<input class="w-full custom-input text-base" id="itemType" placeholder="نوع الصنف" type="text"/>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-sm font-medium mb-1">الكمية الصالحة</label>
+<input class="w-full custom-input text-base" id="itemGoodQuantity" min="0" placeholder="0" type="number"/>
+</div>
+<div>
+<label class="block text-sm font-medium mb-1">الكمية غير الصالحة</label>
+<input class="w-full custom-input text-base" id="itemBadQuantity" min="0" placeholder="0" type="number"/>
+</div>
+</div>
+<textarea class="w-full custom-input text-base" id="itemNotes" placeholder="ملاحظات (اختياري)" rows="2"></textarea>
+<button class="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium" onclick="addInventoryItem()">
+                        ➕ إضافة الصنف
+                    </button>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl">
+<h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    📋 قائمة الأصناف
+                </h2>
+<div class="space-y-2" id="inventoryList">
+<div class="text-center text-gray-500 py-8">
+                        لا توجد أصناف مضافة بعد
+                    </div>
+</div>
+</div>
+</div>
+<!-- Report Section -->
+<div class="p-4 space-y-6 hidden" id="report-section">
+<div class="flex gap-2 mb-4">
+<button class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-colors font-medium" onclick="exportAsPDF()">
+                    📄 تصدير PDF
+                </button>
+</div>
+<div class="bg-white border rounded-xl overflow-hidden" id="reportPreview">
+<div class="print-content p-6" id="printContent">
+<!-- Report content will be generated here -->
+</div>
+</div>
+</div>
+</main>
+<!-- Loading Modal -->
+<div class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="loadingModal">
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-center">
+<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+<p class="text-gray-700 dark:text-gray-300">جاري التصدير...</p>
+</div>
+</div>
+<script>
+        let inventoryData = [];
+        let schoolData = {
+            name: '',
+            logo: null,
+            templateFields: []
+        };
+
+        // IndexedDB setup
+        let db;
+        const dbName = 'InventoryDB';
+        const dbVersion = 1;
+
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, dbVersion);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    
+                    // Create stores
+                    if (!db.objectStoreNames.contains('inventory')) {
+                        db.createObjectStore('inventory', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('schoolData')) {
+                        db.createObjectStore('schoolData', { keyPath: 'key' });
+                    }
+                };
+            });
+        }
+
+        // Save data to IndexedDB
+        async function saveToIndexedDB() {
+            try {
+                const transaction = db.transaction(['inventory', 'schoolData'], 'readwrite');
+                
+                // Save inventory data
+                const inventoryStore = transaction.objectStore('inventory');
+                await inventoryStore.clear();
+                for (const item of inventoryData) {
+                    await inventoryStore.add(item);
+                }
+                
+                // Save school data
+                const schoolStore = transaction.objectStore('schoolData');
+                await schoolStore.clear();
+                await schoolStore.add({ key: 'schoolInfo', data: schoolData });
+                
+                console.log('Data saved to IndexedDB');
+            } catch (error) {
+                console.error('Error saving to IndexedDB:', error);
+            }
+        }
+
+        // Load data from IndexedDB
+        async function loadFromIndexedDB() {
+            try {
+                const transaction = db.transaction(['inventory', 'schoolData'], 'readonly');
+                
+                // Load inventory data
+                const inventoryStore = transaction.objectStore('inventory');
+                const inventoryRequest = inventoryStore.getAll();
+                
+                // Load school data
+                const schoolStore = transaction.objectStore('schoolData');
+                const schoolRequest = schoolStore.get('schoolInfo');
+                
+                inventoryRequest.onsuccess = () => {
+                    inventoryData = inventoryRequest.result || [];
+                    updateInventoryList();
+                };
+                
+                schoolRequest.onsuccess = () => {
+                    if (schoolRequest.result) {
+                        schoolData = schoolRequest.result.data;
+                        // Restore school name
+                        if (schoolData.name) {
+                            document.getElementById('schoolName').value = schoolData.name;
+                        }
+                        // Restore logo
+                        if (schoolData.logo) {
+                            document.getElementById('logoImg').src = schoolData.logo;
+                            document.getElementById('logoPreview').classList.remove('hidden');
+                            document.getElementById('logoStatus').textContent = '✅ تم اختيار الشعار';
+                        }
+
+                    }
+                };
+                
+                console.log('Data loaded from IndexedDB');
+            } catch (error) {
+                console.error('Error loading from IndexedDB:', error);
+            }
+        }
+
+
+
+        // Show specific section
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('setup-section').classList.add('hidden');
+            document.getElementById('inventory-section').classList.add('hidden');
+            document.getElementById('report-section').classList.add('hidden');
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white/40');
+            });
+            
+            // Show selected section
+            document.getElementById(section + '-section').classList.remove('hidden');
+            document.getElementById(section + '-section').classList.add('fade-in');
+            
+            // Add active class to selected tab
+            document.getElementById(section + '-tab').classList.add('bg-white/40');
+            
+            if (section === 'report') {
+                generateReportPreview();
+            }
+        }
+
+
+
+        // Save school name
+        document.getElementById('schoolName').addEventListener('change', function(e) {
+            schoolData.name = e.target.value;
+            saveToIndexedDB();
+        });
+
+
+
+        // Add inventory item
+        function addInventoryItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const type = document.getElementById('itemType').value.trim();
+            const goodQuantity = document.getElementById('itemGoodQuantity').value.trim();
+            const badQuantity = document.getElementById('itemBadQuantity').value.trim();
+            const notes = document.getElementById('itemNotes').value.trim();
+
+            if (!name || !type) {
+                showAlert('يرجى ملء اسم الصنف ونوعه على الأقل');
+                return;
+            }
+
+            const goodQty = parseInt(goodQuantity) || 0;
+            const badQty = parseInt(badQuantity) || 0;
+
+            if (goodQty === 0 && badQty === 0) {
+                showAlert('يرجى إدخال كمية صالحة أو غير صالحة على الأقل');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                name,
+                type,
+                goodQuantity: goodQty,
+                badQuantity: badQty,
+                totalQuantity: goodQty + badQty,
+                notes
+            };
+
+            inventoryData.push(item);
+            updateInventoryList();
+            clearInventoryForm();
+            saveToIndexedDB();
+        }
+
+        // Update inventory list display
+        function updateInventoryList() {
+            const container = document.getElementById('inventoryList');
+            
+            if (inventoryData.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">لا توجد أصناف مضافة بعد</div>';
+                return;
+            }
+
+            container.innerHTML = inventoryData.map(item => `
+                <div class="bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-medium">${item.name}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">${item.type}</p>
+                            <div class="grid grid-cols-2 gap-2 mt-2 text-sm">
+                                <span class="text-green-600">صالح: ${item.goodQuantity}</span>
+                                <span class="text-red-600">تالف: ${item.badQuantity}</span>
+                            </div>
+                            <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                الإجمالي: ${item.totalQuantity}
+                            </div>
+                            ${item.notes ? `<div class="mt-1 text-sm text-gray-500 italic">${item.notes}</div>` : ''}
+                        </div>
+                        <div class="flex gap-1 ml-2">
+                            <button onclick="editInventoryItem(${item.id})" class="text-blue-500 hover:text-blue-700 p-1">
+                                ✏️
+                            </button>
+                            <button onclick="removeInventoryItem(${item.id})" class="text-red-500 hover:text-red-700 p-1">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Remove inventory item
+        function removeInventoryItem(id) {
+            showConfirmDialog('هل أنت متأكد من حذف هذا الصنف؟', () => {
+                inventoryData = inventoryData.filter(item => item.id !== id);
+                updateInventoryList();
+                saveToIndexedDB();
+            });
+        }
+
+        // Clear inventory form
+        function clearInventoryForm() {
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemType').value = '';
+            document.getElementById('itemGoodQuantity').value = '';
+            document.getElementById('itemBadQuantity').value = '';
+            document.getElementById('itemNotes').value = '';
+        }
+
+        // Generate report preview
+        function generateReportPreview() {
+            // Get template fields
+            const templateFieldElements = document.querySelectorAll('#templateFields > div');
+            schoolData.templateFields = [];
+            
+            templateFieldElements.forEach(fieldDiv => {
+                const inputs = fieldDiv.querySelectorAll('input');
+                if (inputs[0].value.trim() && inputs[1].value.trim()) {
+                    schoolData.templateFields.push({
+                        name: inputs[0].value.trim(),
+                        value: inputs[1].value.trim()
+                    });
+                }
+            });
+
+            const printContent = document.getElementById('printContent');
+            const currentDate = new Date().toLocaleDateString('ar-SA');
+            
+            let templateFieldsHTML = '';
+            schoolData.templateFields.forEach(field => {
+                templateFieldsHTML += `
+                    <div class="flex justify-between border-b border-gray-300 py-1">
+                        <span class="font-medium">${field.name}:</span>
+                        <span>${field.value}</span>
+                    </div>
+                `;
+            });
+
+            let inventoryTableHTML = '';
+            if (inventoryData.length > 0) {
+                inventoryTableHTML = `
+                    <div class="table-container">
+                        <table class="print-table">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th width="20%">اسم الصنف</th>
+                                    <th width="15%">نوع الصنف</th>
+                                    <th width="12%">صالح</th>
+                                    <th width="12%">تالف</th>
+                                    <th width="12%">الإجمالي</th>
+                                    <th width="24%">ملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${inventoryData.map((item, index) => `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.name}</td>
+                                        <td>${item.type}</td>
+                                        <td style="color: #16a34a; font-weight: bold;">${item.goodQuantity}</td>
+                                        <td style="color: #dc2626; font-weight: bold;">${item.badQuantity}</td>
+                                        <td style="font-weight: bold;">${item.totalQuantity}</td>
+                                        <td style="font-size: 11px; text-align: right; white-space: normal; max-width: 150px;">${item.notes || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-500 text-center mt-2">💡 يمكنك السحب أفقياً لرؤية المزيد من البيانات</p>
+                `;
+            } else {
+                inventoryTableHTML = '<p class="text-center text-gray-500 mt-6 py-8 border border-dashed border-gray-300">لا توجد أصناف مضافة</p>';
+            }
+
+            const totalItems = inventoryData.reduce((sum, item) => sum + item.totalQuantity, 0);
+            const goodItems = inventoryData.reduce((sum, item) => sum + item.goodQuantity, 0);
+            const badItems = inventoryData.reduce((sum, item) => sum + item.badQuantity, 0);
+
+            printContent.innerHTML = `
+                <div class="text-center mb-6">
+                    ${schoolData.logo ? `<img src="${schoolData.logo}" alt="شعار المدرسة" class="w-16 h-16 mx-auto mb-4 object-contain">` : ''}
+                    <h1 class="text-2xl font-bold mb-2">${schoolData.name || 'اسم المدرسة'}</h1>
+                    <h2 class="text-xl font-semibold text-gray-700">تقرير جرد العهدة</h2>
+                    <p class="text-sm text-gray-600 mt-2">تاريخ التقرير: ${currentDate}</p>
+                </div>
+
+                ${templateFieldsHTML ? `
+                    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-bold mb-3">بيانات إضافية:</h3>
+                        ${templateFieldsHTML}
+                    </div>
+                ` : ''}
+
+                ${inventoryTableHTML}
+
+                ${inventoryData.length > 0 ? `
+                    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-bold mb-3">ملخص الجرد:</h3>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div class="bg-blue-100 p-3 rounded">
+                                <div class="text-2xl font-bold text-blue-600">${totalItems}</div>
+                                <div class="text-sm text-blue-800">إجمالي الأصناف</div>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded">
+                                <div class="text-2xl font-bold text-green-600">${goodItems}</div>
+                                <div class="text-sm text-green-800">الأصناف الصالحة</div>
+                            </div>
+                            <div class="bg-red-100 p-3 rounded">
+                                <div class="text-2xl font-bold text-red-600">${badItems}</div>
+                                <div class="text-sm text-red-800">الأصناف التالفة</div>
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+
+
+        // Export as PDF
+        async function exportAsPDF() {
+            document.getElementById('loadingModal').classList.remove('hidden');
+            
+            try {
+                const element = document.getElementById('printContent');
+                
+                // Create a copy for landscape export
+                const exportElement = element.cloneNode(true);
+                exportElement.style.width = '800px';
+                exportElement.style.padding = '20px';
+                
+                // Append to body temporarily for rendering
+                exportElement.style.position = 'absolute';
+                exportElement.style.left = '-9999px';
+                exportElement.style.top = '0';
+                document.body.appendChild(exportElement);
+                
+                const canvas = await html2canvas(exportElement, {
+                    backgroundColor: '#ffffff',
+                    scale: 1.5,
+                    useCORS: true,
+                    allowTaint: true,
+                    width: 800
+                });
+                
+                // Remove the temporary element
+                document.body.removeChild(exportElement);
+                
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                
+                // Use landscape orientation for better table view
+                const pdf = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape
+                
+                const pageWidth = 297; // A4 landscape width
+                const pageHeight = 210; // A4 landscape height
+                const imgWidth = pageWidth - 20; // margins
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10; // top margin
+                
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= (pageHeight - 20); // account for margins
+                
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= (pageHeight - 20);
+                }
+                
+                pdf.save(`جرد_العهدة_${new Date().toLocaleDateString('ar-SA')}.pdf`);
+                showAlert('تم تصدير التقرير كـ PDF بنجاح (بالعرض)');
+            } catch (error) {
+                showAlert('حدث خطأ أثناء التصدير: ' + error.message);
+            } finally {
+                document.getElementById('loadingModal').classList.add('hidden');
+            }
+        }
+
+        // Custom alert function
+        function showAlert(message) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+                    <p class="text-gray-700 dark:text-gray-300 mb-4 text-center">${message}</p>
+                    <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors" onclick="this.closest('.fixed').remove()">حسناً</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                modal.remove();
+            }, 3000);
+        }
+
+        // Store pending callbacks
+        let pendingCallbacks = {};
+        let callbackCounter = 0;
+
+        // Custom confirm dialog
+        function showConfirmDialog(message, onConfirm) {
+            const callbackId = ++callbackCounter;
+            pendingCallbacks[callbackId] = onConfirm;
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+                    <div class="text-gray-700 dark:text-gray-300 mb-4 text-center">${message}</div>
+                    <div class="flex justify-center gap-3">
+                        <button class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors" onclick="cancelConfirm(${callbackId}); this.closest('.fixed').remove()">إلغاء</button>
+                        <button class="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded transition-colors" onclick="executeConfirm(${callbackId}); this.closest('.fixed').remove()">تأكيد</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Execute confirm callback
+        function executeConfirm(callbackId) {
+            if (pendingCallbacks[callbackId]) {
+                pendingCallbacks[callbackId]();
+                delete pendingCallbacks[callbackId];
+            }
+        }
+
+        // Cancel confirm callback
+        function cancelConfirm(callbackId) {
+            delete pendingCallbacks[callbackId];
+        }
+
+        // Initialize the app
+        async function initApp() {
+            try {
+                await initDB();
+                await loadFromIndexedDB();
+                showSection('inventory');
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                showSection('inventory');
+            }
+        }
+
+
+
+        // Save logo when uploaded
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    schoolData.logo = e.target.result;
+                    document.getElementById('logoImg').src = e.target.result;
+                    document.getElementById('logoPreview').classList.remove('hidden');
+                    document.getElementById('logoStatus').textContent = '✅ تم اختيار الشعار';
+                    saveToIndexedDB();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Edit inventory item
+        function editInventoryItem(id) {
+            const item = inventoryData.find(item => item.id === id);
+            if (!item) return;
+            
+            showEditModal(item);
+        }
+
+        // Show edit modal
+        function showEditModal(item) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full mx-4 max-h-screen overflow-y-auto">
+                    <h3 class="text-lg font-bold mb-4 text-center">تعديل الصنف</h3>
+                    
+                    <div class="space-y-3">
+                        <input type="text" id="editItemName" class="w-full custom-input text-base" placeholder="اسم الصنف" value="${item.name}">
+                        <input type="text" id="editItemType" class="w-full custom-input text-base" placeholder="نوع الصنف" value="${item.type}">
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">الكمية الصالحة</label>
+                                <input type="number" id="editItemGoodQuantity" class="w-full custom-input text-base" min="0" value="${item.goodQuantity}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">الكمية غير الصالحة</label>
+                                <input type="number" id="editItemBadQuantity" class="w-full custom-input text-base" min="0" value="${item.badQuantity}">
+                            </div>
+                        </div>
+                        
+                        <textarea id="editItemNotes" class="w-full custom-input text-base" placeholder="ملاحظات (اختياري)" rows="2">${item.notes || ''}</textarea>
+                    </div>
+                    
+                    <div class="flex justify-center gap-3 mt-6">
+                        <button class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors" onclick="this.closest('.fixed').remove()">إلغاء</button>
+                        <button class="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded transition-colors" onclick="saveEditedItem(${item.id}); this.closest('.fixed').remove()">حفظ التعديل</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Save edited item
+        function saveEditedItem(id) {
+            const name = document.getElementById('editItemName').value.trim();
+            const type = document.getElementById('editItemType').value.trim();
+            const goodQuantity = document.getElementById('editItemGoodQuantity').value.trim();
+            const badQuantity = document.getElementById('editItemBadQuantity').value.trim();
+            const notes = document.getElementById('editItemNotes').value.trim();
+
+            if (!name || !type) {
+                showAlert('يرجى ملء اسم الصنف ونوعه على الأقل');
+                return;
+            }
+
+            const goodQty = parseInt(goodQuantity) || 0;
+            const badQty = parseInt(badQuantity) || 0;
+
+            if (goodQty === 0 && badQty === 0) {
+                showAlert('يرجى إدخال كمية صالحة أو غير صالحة على الأقل');
+                return;
+            }
+
+            const itemIndex = inventoryData.findIndex(item => item.id === id);
+            if (itemIndex !== -1) {
+                inventoryData[itemIndex] = {
+                    ...inventoryData[itemIndex],
+                    name,
+                    type,
+                    goodQuantity: goodQty,
+                    badQuantity: badQty,
+                    totalQuantity: goodQty + badQty,
+                    notes
+                };
+                
+                updateInventoryList();
+                saveToIndexedDB();
+                showAlert('تم تحديث الصنف بنجاح');
+            }
+        }
+
+        // Import data
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        // Handle file import
+        document.getElementById('importFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    let importedData;
+
+                    if (file.name.endsWith('.json')) {
+                        importedData = JSON.parse(content);
+                        processImportedData(importedData);
+                    } else if (file.name.endsWith('.csv')) {
+                        importedData = parseCSV(content);
+                        processImportedData({ inventory: importedData });
+                    } else {
+                        showAlert('نوع الملف غير مدعوم. يرجى اختيار ملف JSON أو CSV');
+                        return;
+                    }
+                } catch (error) {
+                    showAlert('خطأ في قراءة الملف: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Parse CSV content
+        function parseCSV(content) {
+            const lines = content.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(',').map(v => v.trim());
+                    const item = {
+                        id: Date.now() + i,
+                        name: values[0] || '',
+                        type: values[1] || '',
+                        goodQuantity: parseInt(values[2]) || 0,
+                        badQuantity: parseInt(values[3]) || 0,
+                        notes: values[4] || ''
+                    };
+                    item.totalQuantity = item.goodQuantity + item.badQuantity;
+                    if (item.name && item.type) {
+                        data.push(item);
+                    }
+                }
+            }
+            return data;
+        }
+
+        // Process imported data
+        function processImportedData(data) {
+            showImportDialog('هل تريد استبدال البيانات الحالية أم إضافة البيانات المستوردة إليها؟', 
+                () => {
+                    // Replace current data
+                    if (data.inventory && Array.isArray(data.inventory)) {
+                        inventoryData = data.inventory.map(item => ({
+                            ...item,
+                            id: item.id || Date.now() + Math.random(),
+                            totalQuantity: (item.goodQuantity || 0) + (item.badQuantity || 0)
+                        }));
+                    }
+
+                    if (data.schoolData) {
+                        schoolData = { ...schoolData, ...data.schoolData };
+                        if (schoolData.name) {
+                            document.getElementById('schoolName').value = schoolData.name;
+                        }
+                        if (schoolData.logo) {
+                            document.getElementById('logoImg').src = schoolData.logo;
+                            document.getElementById('logoPreview').classList.remove('hidden');
+                            document.getElementById('logoStatus').textContent = '✅ تم اختيار الشعار';
+                        }
+                    }
+
+                    updateInventoryList();
+                    saveToIndexedDB();
+                    showAlert(`تم استيراد ${inventoryData.length} صنف بنجاح`);
+                }, 
+                () => {
+                    // Add to current data
+                    if (data.inventory && Array.isArray(data.inventory)) {
+                        const newItems = data.inventory.map(item => ({
+                            ...item,
+                            id: Date.now() + Math.random(),
+                            totalQuantity: (item.goodQuantity || 0) + (item.badQuantity || 0)
+                        }));
+                        inventoryData = [...inventoryData, ...newItems];
+                    }
+
+                    updateInventoryList();
+                    saveToIndexedDB();
+                    showAlert(`تم إضافة ${data.inventory ? data.inventory.length : 0} صنف جديد`);
+                }
+            );
+        }
+
+        // Show import dialog with replace/add options
+        function showImportDialog(message, onReplace, onAdd) {
+            const replaceCallbackId = ++callbackCounter;
+            const addCallbackId = ++callbackCounter;
+            
+            pendingCallbacks[replaceCallbackId] = onReplace;
+            pendingCallbacks[addCallbackId] = onAdd;
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+                    <div class="text-gray-700 dark:text-gray-300 mb-4 text-center">${message}</div>
+                    <div class="flex flex-col gap-2">
+                        <button class="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded transition-colors" onclick="executeImportCallback(${replaceCallbackId}); this.closest('.fixed').remove()">استبدال البيانات الحالية</button>
+                        <button class="px-4 py-2 bg-green-500 text-white hover:bg-green-600 rounded transition-colors" onclick="executeImportCallback(${addCallbackId}); this.closest('.fixed').remove()">إضافة للبيانات الحالية</button>
+                        <button class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors" onclick="cancelImportCallback(${replaceCallbackId}, ${addCallbackId}); this.closest('.fixed').remove()">إلغاء</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Execute import callback
+        function executeImportCallback(callbackId) {
+            if (pendingCallbacks[callbackId]) {
+                pendingCallbacks[callbackId]();
+                delete pendingCallbacks[callbackId];
+            }
+        }
+
+        // Cancel import callbacks
+        function cancelImportCallback(replaceId, addId) {
+            delete pendingCallbacks[replaceId];
+            delete pendingCallbacks[addId];
+        }
+
+        // Export data as JSON
+        function exportData() {
+            const exportData = {
+                inventory: inventoryData,
+                schoolData: {
+                    name: schoolData.name,
+                    // Don't export logo for file size reasons, user can re-upload
+                    templateFields: schoolData.templateFields || []
+                },
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `جرد_العهدة_بيانات_${new Date().toLocaleDateString('ar-SA')}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('تم تصدير البيانات كملف JSON بنجاح');
+        }
+
+        // Clear all data
+        function clearAllData() {
+            showConfirmDialog('هل أنت متأكد من حذف جميع البيانات؟<br><br>سيتم حذف:<br>• جميع الأصناف<br>• اسم المدرسة<br>• الشعار<br><br>هذا الإجراء لا يمكن التراجع عنه!', () => {
+                // Clear all data
+                inventoryData = [];
+                schoolData = {
+                    name: '',
+                    logo: null,
+                    templateFields: []
+                };
+                
+                // Clear form fields
+                document.getElementById('schoolName').value = '';
+                document.getElementById('logoStatus').textContent = '';
+                document.getElementById('logoPreview').classList.add('hidden');
+                
+                // Update displays
+                updateInventoryList();
+                
+                // Save to IndexedDB
+                saveToIndexedDB();
+                
+                showAlert('تم حذف جميع البيانات بنجاح');
+            });
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+<script>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      console.log('Service Worker مسجّل:', reg.scope);
+    }).catch(function(err){
+      console.warn('فشل تسجيل Service Worker:', err);
+    });
+  });
+}</script></body>
+</html>
